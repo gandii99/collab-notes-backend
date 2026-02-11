@@ -1,5 +1,6 @@
 package com.example.collabnotes.controller;
 
+import com.example.collabnotes.dto.CreateUserRequest;
 import com.example.collabnotes.dto.UserResponse;
 import com.example.collabnotes.entity.User;
 import com.example.collabnotes.service.UserService;
@@ -25,8 +26,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponse createUser(@RequestBody CreateUserRequest createUserRequest) {
+        return userService.createUser(createUserRequest);
     }
 
 }

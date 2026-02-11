@@ -1,9 +1,8 @@
 package com.example.collabnotes.controller;
 
+import com.example.collabnotes.dto.CreateNoteRequest;
 import com.example.collabnotes.dto.NoteResponse;
-import com.example.collabnotes.entity.Note;
 import com.example.collabnotes.service.NoteService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +25,8 @@ public class NoteController {
     }
 
     @PostMapping
-    public NoteResponse createNote(@RequestBody Note note) {
-        return noteService.createNote(note);
+    public NoteResponse createNote(@RequestBody CreateNoteRequest createNoteRequest) {
+        return noteService.createNote(createNoteRequest);
     }
 
     @DeleteMapping("/{noteId}")
