@@ -8,10 +8,10 @@ import com.example.collabnotes.mapper.CreateNoteRequestMapper;
 import com.example.collabnotes.mapper.NoteResponseMapper;
 import com.example.collabnotes.repository.NoteRepository;
 import com.example.collabnotes.repository.UserRepository;
+import com.example.collabnotes.security.CurrentUserProvider;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,32 +24,32 @@ public class NoteService {
     private final UserRepository userRepository;
     private final NoteResponseMapper noteResponseMapper;
     private final CreateNoteRequestMapper createNoteRequestMapper;
+    private final CurrentUserProvider currentUserProvider;
 
-    public List<NoteResponse> getAllNotes(Long userId) {
+    public List<NoteResponse> getAllNotes() {
 
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+        Long userId = currentUserProvider.requireUserId();
 
-        return (userId != null ? noteRepository.findAllByCreatedBy_Id(userId) : noteRepository.findAll()).stream()
+        return noteRepository.findAllByCreatedBy_Id(userId)
+                .stream()
                 .map(noteResponseMapper::map)
                 .toList();
     }
 
     public NoteResponse getNoteById(Long noteId) {
-        Note note = noteRepository.findById(noteId)
+        Long userId = currentUserProvider.requireUserId();
+
+        Note note = noteRepository.findByIdAndCreatedBy_Id(noteId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Note with id: " + noteId + " not found"));
 
         return noteResponseMapper.map(note);
     }
 
     public NoteResponse createNote(CreateNoteRequest createNoteRequest) {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+        Long userId = currentUserProvider.requireUserId();
 
-        String email = authentication.getName();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User with mail: " + email + " not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Note noteToCreate = createNoteRequestMapper.map(createNoteRequest);
         noteToCreate.setCreatedBy(user);
@@ -57,14 +57,15 @@ public class NoteService {
         return noteResponseMapper.map(noteCreated);
     }
 
+    @Transactional
     public void deleteNoteById(Long noteId) {
+        Long userId = currentUserProvider.requireUserId();
 
-        boolean isExist = noteRepository.existsById(noteId);
 
-        if (!isExist) {
+        long deletedNotes = noteRepository.deleteByIdAndCreatedBy_Id(noteId, userId);
+
+        if (deletedNotes == 0) {
             throw new EntityNotFoundException("Note with id: " + noteId + " not found");
         }
-
-        noteRepository.deleteById(noteId);
     }
 }

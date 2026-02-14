@@ -41,7 +41,7 @@ public class JwtService {
                 .getSubject();
     }
 
-    public Boolean isValidToken(String token) {
+    public boolean isValidToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith(secretKey)

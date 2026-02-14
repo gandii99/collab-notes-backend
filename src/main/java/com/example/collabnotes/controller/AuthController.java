@@ -35,7 +35,7 @@ public class AuthController {
                 .build();
     }
 
-    @GetMapping("me")
+    @GetMapping("/me")
     public String me() {
         return SecurityContextHolder.getContext()
                 .getAuthentication()

@@ -15,8 +15,8 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping
-    public List<NoteResponse> getAllNotes(@RequestParam(required = false) Long userId) {
-        return noteService.getAllNotes(userId);
+    public List<NoteResponse> getAllNotes() {
+        return noteService.getAllNotes();
     }
 
     @GetMapping("/{noteId}")
