@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateNoteRequest {
-    String title;
-    String content;
+    private String title;
+    private String content;
 }

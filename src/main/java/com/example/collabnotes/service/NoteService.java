@@ -2,6 +2,7 @@ package com.example.collabnotes.service;
 
 import com.example.collabnotes.dto.CreateNoteRequest;
 import com.example.collabnotes.dto.NoteResponse;
+import com.example.collabnotes.dto.UpdateNoteRequest;
 import com.example.collabnotes.entity.Note;
 import com.example.collabnotes.entity.User;
 import com.example.collabnotes.mapper.CreateNoteRequestMapper;
@@ -12,7 +13,9 @@ import com.example.collabnotes.security.CurrentUserProvider;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -55,6 +58,30 @@ public class NoteService {
         noteToCreate.setCreatedBy(user);
         Note noteCreated = noteRepository.save(noteToCreate);
         return noteResponseMapper.map(noteCreated);
+    }
+
+    @Transactional
+    public NoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
+
+        if (updateNoteRequest == null || (updateNoteRequest.getTitle() == null && updateNoteRequest.getContent() == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PATCH body must contain at least one field: title or content");
+        }
+
+        Long userId = currentUserProvider.requireUserId();
+
+        Note note = noteRepository.findByIdAndCreatedBy_Id(noteId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Note with id: " + noteId + " not found"));
+
+        if (updateNoteRequest.getTitle() != null) {
+            note.setTitle(updateNoteRequest.getTitle());
+        }
+        if (updateNoteRequest.getContent() != null) {
+            note.setContent(updateNoteRequest.getContent());
+        }
+
+        Note savedNote = noteRepository.save(note);
+
+        return noteResponseMapper.map(savedNote);
     }
 
     @Transactional

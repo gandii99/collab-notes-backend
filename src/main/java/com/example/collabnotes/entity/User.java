@@ -29,4 +29,7 @@ public class User {
 
     @OneToMany(mappedBy = "createdBy")
     private List<Note> notes;
+
+    @OneToMany(mappedBy = "user")
+    private List<NoteShare> noteShares;
 }

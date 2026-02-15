@@ -1,6 +1,7 @@
 package com.example.collabnotes.controller;
 
 import com.example.collabnotes.dto.LoginRequest;
+import com.example.collabnotes.dto.RegistrationRequest;
 import com.example.collabnotes.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         return authService.login(request, response);
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<?> registration(@RequestBody RegistrationRequest request, HttpServletResponse response) {
+        return authService.registration(request, response);
     }
 
     @PostMapping("/logout")

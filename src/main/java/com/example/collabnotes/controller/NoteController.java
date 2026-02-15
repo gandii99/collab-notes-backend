@@ -2,7 +2,9 @@ package com.example.collabnotes.controller;
 
 import com.example.collabnotes.dto.CreateNoteRequest;
 import com.example.collabnotes.dto.NoteResponse;
+import com.example.collabnotes.dto.UpdateNoteRequest;
 import com.example.collabnotes.service.NoteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,11 @@ public class NoteController {
     @GetMapping("/{noteId}")
     public NoteResponse getNoteById(@PathVariable Long noteId) {
         return noteService.getNoteById(noteId);
+    }
+
+    @PatchMapping("/{noteId}")
+    public NoteResponse updateNote(@PathVariable Long noteId, @Valid @RequestBody UpdateNoteRequest updateNoteRequest) {
+        return noteService.updateNote(noteId, updateNoteRequest);
     }
 
     @PostMapping

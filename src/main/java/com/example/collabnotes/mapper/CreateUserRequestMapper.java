@@ -1,13 +1,13 @@
 package com.example.collabnotes.mapper;
 
-import com.example.collabnotes.dto.CreateUserRequest;
+import com.example.collabnotes.dto.RegistrationRequest;
 import com.example.collabnotes.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateUserRequestMapper {
 
-    public User map(CreateUserRequest request) {
+    public User map(RegistrationRequest request) {
         if (request == null) {
             return null;
         }

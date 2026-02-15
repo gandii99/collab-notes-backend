@@ -3,7 +3,7 @@ package com.example.collabnotes.dto;
 import lombok.Data;
 
 @Data
-public class CreateUserRequest {
+public class RegistrationRequest {
     private String email;
     private String password;
     private String firstName;

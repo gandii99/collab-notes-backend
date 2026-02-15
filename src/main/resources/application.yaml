@@ -9,6 +9,11 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  web:
+    error:
+      include-stacktrace: never
+      include-message: always
+      include-binding-errors: never
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION}
@@ -17,3 +22,5 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.security: DEBUG
+    com.example.collabnotes.security: DEBUG
