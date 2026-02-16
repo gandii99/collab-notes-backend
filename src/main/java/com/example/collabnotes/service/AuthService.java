@@ -31,6 +31,7 @@ public class AuthService {
     private final UserResponseMapper userResponseMapper;
 
     public ResponseEntity<?> login(LoginRequest request, HttpServletResponse response) {
+        
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

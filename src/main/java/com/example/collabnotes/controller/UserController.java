@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -31,5 +31,5 @@ public class UserController {
         return userService.updateUser(updateUserRequest);
     }
 
-   
+
 }

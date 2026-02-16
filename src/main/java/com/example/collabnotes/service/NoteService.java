@@ -61,6 +61,25 @@ public class NoteService {
     }
 
     @Transactional
+    public NoteResponse updateNoteContentFromWs(Long noteId, Long userId, String content) {
+        if (content == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "PATCH body must contain at least one field: content");
+        }
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User is not authenticated");
+        }
+
+        Note note = noteRepository.findByIdAndCreatedBy_Id(noteId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Note with id: " + noteId + " not found"));
+
+        note.setContent(content);
+
+        Note savedNote = noteRepository.save(note);
+
+        return noteResponseMapper.map(savedNote);
+    }
+
+    @Transactional
     public NoteResponse updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
 
         if (updateNoteRequest == null || (updateNoteRequest.getTitle() == null && updateNoteRequest.getContent() == null)) {

@@ -2,7 +2,10 @@ package com.example.collabnotes.controller;
 
 import com.example.collabnotes.dto.LoginRequest;
 import com.example.collabnotes.dto.RegistrationRequest;
+import com.example.collabnotes.dto.UserResponse;
+import com.example.collabnotes.security.CurrentUserProvider;
 import com.example.collabnotes.service.AuthService;
+import com.example.collabnotes.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -12,10 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final CurrentUserProvider currentUserProvider;
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
@@ -42,9 +47,11 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public String me() {
-        return SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
+    public UserResponse me() {
+        Long userId = currentUserProvider.requireUserId();
+        return userService.getUserById(userId);
+//        return SecurityContextHolder.getContext()
+//                .getAuthentication()
+//                .getName();
     }
 }

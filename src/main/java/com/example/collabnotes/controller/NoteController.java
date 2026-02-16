@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/notes")
+@RequestMapping("/api/notes")
 @RequiredArgsConstructor
 public class NoteController {
     private final NoteService noteService;
